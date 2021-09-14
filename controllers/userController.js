@@ -1,4 +1,4 @@
-
+const User = require('../models/User')
 
 const index = (req, res) => {
 const query = req.query
@@ -9,12 +9,13 @@ const query = req.query
     })
 }
 
-const create =  (req, res) => {
+const create = async (req, res) => {
     const body = req.body
+    const user = await new User(body)
+    user.save()
 
     res.json({
-        msg : 'Post API',
-        body
+        user
     })
 }
 
