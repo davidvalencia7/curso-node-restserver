@@ -1,11 +1,14 @@
 const { Router } = require('express')
+const { check } = require('express-validator')
 const { index, create, patch, update, destroy } = require('../controllers/userController')
 
 const router = Router()
 
 router.get('/', index)
 
-router.post('/', create)
+router.post('/', [
+    check('correo', 'Correo no Valido').isEmail(),
+] , create)
 
 router.put('/:id', update)
 
