@@ -2,7 +2,7 @@ const { Router } = require('express')
 const { check } = require('express-validator')
 const { index, create, patch, update, destroy } = require('../controllers/userController')
 const { validarCampos } = require('../middlewares/validar-campos')
-const Role = require('../models/Role')
+const { existRole }  = require('../helpers/db-validators')
 
 const router = Router()
 
@@ -13,11 +13,7 @@ router.post('/', [
     check('password','Password debe tener minimo 4 caracteres').isLength({ min: 4}),
     check('correo', 'Correo no Valido').isEmail(),
     //check('rol','Rol no valido').isIn(['ADMIN_ROLE','USER_ROLE']),
-    check('rol').custom( async (rol) => {
-        const existeRol = await Role.findOne({rol})
-        if(!existeRol)
-            throw new Error(`El rol ${ rol} No Existe `)
-    }),
+    check('rol').custom( existRole ), //si no se pasa argumento toma el primero (rol) => existRole(rol)
     validarCampos
 ] , create)
 
