@@ -30,7 +30,7 @@ const create = async (req, res) => {
 
 const update = async (req, res) => {
     const {id} = req.params
-    const { password, google, correo, ...userData} = req.body
+    const { _id, password, google, correo, ...userData} = req.body
 
     if(password){
         // encriptar el password
