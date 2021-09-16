@@ -16,10 +16,9 @@ const create = async (req, res) => {
     const {nombre, correo, password, rol } = req.body
     const user = await new User({nombre, correo, password, rol })
 
-    // encriptar el correo
+    // encriptar el password
     const salt = bcryptjs.genSaltSync()
     user.password = bcryptjs.hashSync(password,salt)
-
 
     //guardar
     user.save()
@@ -29,11 +28,21 @@ const create = async (req, res) => {
     })
 }
 
-const update = (req, res) => {
-    const id = req.params.id
+const update = async (req, res) => {
+    const {id} = req.params
+    const { password, google, correo, ...userData} = req.body
+
+    if(password){
+        // encriptar el password
+        const salt = bcryptjs.genSaltSync()
+        userData.password = bcryptjs.hashSync(password,salt)
+    }
+
+    const user = await User.findByIdAndUpdate(id,userData)
+
     res.json({
         msg : 'Update API | Controller',
-        id
+        user
     })
 }
 
