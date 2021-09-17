@@ -2,12 +2,16 @@ const User = require('../models/User')
 const bcryptjs = require('bcryptjs')
 
 
-const index = (req, res) => {
-const query = req.query
+const index = async (req, res) => {
+    const {limit = 5, desde = 0} = req.query
+
+    const users = await User.find()
+                .skip(Number(desde))
+                .limit(Number(limit))
 
     res.json(
-        {msg : 'get API  | Controlador',
-        query
+        {
+        users
     })
 }
 
