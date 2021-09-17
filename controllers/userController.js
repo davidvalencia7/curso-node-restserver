@@ -61,8 +61,16 @@ const patch = (req, res) => {
     res.json({msg : 'Patch API | Controller'})
 }
 
-const destroy = (req, res) => {
-    res.json({msg : 'Delete API | Controller'})
+const destroy = async (req, res) => {
+    const { id } = req.params
+
+    /* Borrado Fisico
+    const user  = await User.findByIdAndDelete(id)
+    */
+
+    const user = await User.findByIdAndUpdate(id, { estatus : true })
+
+    res.json({user})
    }
 
 
