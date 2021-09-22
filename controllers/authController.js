@@ -1,4 +1,5 @@
 const bcryptjs = require('bcryptjs')
+const generarJWT = require('../helpers/generarJWT')
 
 const User = require("../models/User")
 
@@ -24,10 +25,11 @@ const login = async (req, res ) => {
         if(!validPassword)
             res.status(400).json({ msg : 'Usuario | Password no son corrrectos  - Password'})
 
-        
+        const token = await generarJWT(user.id)
 
         res.json({
-            msg : 'Login ok'
+            user,
+            token
         })
         
     } catch (error) {
