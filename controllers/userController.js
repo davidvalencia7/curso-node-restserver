@@ -69,6 +69,7 @@ const destroy = async (req, res) => {
     */
 
     const user = await User.findByIdAndUpdate(id, { estatus : true })
+    console.log(user);
 
     res.json({user})
    }
