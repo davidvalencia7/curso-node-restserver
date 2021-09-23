@@ -22,7 +22,7 @@ const userSchema = Schema({
     },
     estatus : {
         type : Boolean,
-        default : false
+        default : true
     },
     google : {
         type : Boolean,

@@ -17,7 +17,7 @@ const login = async (req, res ) => {
             res.status(400).json({ msg : 'Usuario | Password no son correctos - correo'})
 
         //Verificar si el email existe
-        if(!user.estatus)
+        if(user.estatus)
             res.status(400).json({ msg : 'Usuario | Password no son correctos - estatus'})        
         
         //Verificar password
