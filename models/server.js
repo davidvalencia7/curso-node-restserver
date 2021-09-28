@@ -5,6 +5,7 @@ const { dbConnection } = require('../database/config')
 
 const auth = require('../routes/auth')
 const users = require('../routes/users')
+const categorias = require('../routes/categorias')
 
 
 
@@ -15,8 +16,11 @@ class Server {
         this.app  = express()
         this.port = process.env.PORT
 
-        this.usersPath = '/api/usuarios'
-        this.authPath = '/api/auth'
+        this.paths = {
+            auth : '/api/auth',
+            user : '/api/usuarios',
+            categorias : '/api/categorias'
+        }
         //Conectar a Base de Datos
         this.conectarDB()
 
@@ -45,8 +49,9 @@ class Server {
 
     routes() {
         
-        this.app.use(this.authPath, auth)
-        this.app.use(this.usersPath, users)
+        this.app.use(this.paths.auth, auth)
+        this.app.use(this.paths.user, users)
+        this.app.use(this.paths.categorias, categorias)
     }
 
     listen() {
