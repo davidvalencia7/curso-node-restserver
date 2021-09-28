@@ -1,3 +1,4 @@
+const Categoria = require("../models/Categoria")
 
 
 const index = (req, res) => {
@@ -6,9 +7,26 @@ const index = (req, res) => {
     })
 }
 
-const create = (req, res) => {
-    res.json({
-        msg : 'Create'
+const create = async (req, res) => {
+
+    const nombre = req.body.nombre.toUpperCase()
+
+    const _categoria = await Categoria.findOne({nombre})
+    if (_categoria) 
+        return res.status(400).json({ msg : `La categoria ${ _categoria.nombre }, ya existe`})
+
+
+    const data = {
+        nombre,
+        user : req.user._id
+    }
+
+    const categoria = new Categoria(data)
+    await categoria.save()
+
+    res.status(201).json({
+        msg : 'OK',
+        categoria
     })
 }
 
