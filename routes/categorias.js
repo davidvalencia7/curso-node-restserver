@@ -1,6 +1,8 @@
 const { Router } = require('express')
 const { check } = require('express-validator')
 
+const { validarJWT } = require('../middlewares')
+
 const { index, create, show, update, destroy } = require('../controllers/categoriasController')
 
 const router = Router()
@@ -9,7 +11,7 @@ const router = Router()
 router.get('/', index)
 
 //crear categoria - privado - cualquier persona con un token valido
-router.post('/', create)
+router.post('/', [validarJWT], create)
 
 
 router.get('/:id', show)
