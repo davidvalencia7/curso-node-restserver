@@ -1,35 +1,35 @@
 const jwt = require('jsonwebtoken')
-const User = require('../models/User')
+const { User } = require('../models')
 
-const validarJWT = async ( req, res, next ) => {
+const validarJWT = async (req, res, next) => {
+  const token = req.header('Authorization')
 
-    const token = req.header('Authorization')
+  if (!token)
+    return res.status(401).json({ msg: 'No hay token en la petición' })
 
-    if(!token)
-        return res.status(401).json({ msg: 'No hay token en la petición'})
+  try {
+    const { uid } = jwt.verify(token, process.env.SECRETORPRIVATEKEY)
+    const user = await User.findById(uid)
 
-    try{
-        const { uid } = jwt.verify(token, process.env.SECRETORPRIVATEKEY)
-        const user = await User.findById(uid)
+    //Verificar que el usuario exista
+    if (!user)
+      return res
+        .status(401)
+        .json({ msj: 'Token no valido - usuario no existe' })
 
-        //Verificar que el usuario exista
-        if(!user)
-            return res.status(401).json({ msj : 'Token no valido - usuario no existe'})
+    //Verificar que el usuario este activo
+    if (!user.estatus)
+      return res
+        .status(401)
+        .json('Token no valido - usuario con estatus : false')
 
-        //Verificar que el usuario este activo
-        if(!user.estatus)
-            return res.status(401).json('Token no valido - usuario con estatus : false')
+    req.user = user
 
-        req.user = user
-
-        next()
-
-    }catch(error){
-        console.log(error);
-        return res.status(401).json({ msg : 'Token no valido'})
-    }
-
-    
+    next()
+  } catch (error) {
+    console.log(error)
+    return res.status(401).json({ msg: 'Token no valido' })
+  }
 }
 
-module.exports = {validarJWT}
+module.exports = { validarJWT }
