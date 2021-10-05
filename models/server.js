@@ -5,58 +5,57 @@ const { dbConnection } = require('../database/config')
 
 const auth = require('../routes/auth')
 const users = require('../routes/users')
+const productos = require('../routes/productos')
 const categorias = require('../routes/categorias')
 
-
-
-
 class Server {
+  constructor() {
+    this.app = express()
+    this.port = process.env.PORT
 
-    constructor() {
-        this.app  = express()
-        this.port = process.env.PORT
-
-        this.paths = {
-            auth : '/api/auth',
-            user : '/api/usuarios',
-            categorias : '/api/categorias'
-        }
-        //Conectar a Base de Datos
-        this.conectarDB()
-
-        //Middlewares
-        this.middlewares()
-
-        //Rutas de mi aplicacion
-        this.routes()
+    this.paths = {
+      auth: '/api/auth',
+      user: '/api/usuarios',
+      productos: '/api/productos',
+      categorias: '/api/categorias',
     }
+    //Conectar a Base de Datos
+    this.conectarDB()
 
-    async conectarDB(){
-        await dbConnection()
-    }
+    //Middlewares
+    this.middlewares()
 
-    middlewares() {
-            //CORS
-            this.app.use( cors() )
+    //Rutas de mi aplicacion
+    this.routes()
+  }
 
-            // lectura y paeso del body
-            this.app.use( express.json() )
+  async conectarDB() {
+    await dbConnection()
+  }
 
-            //Directorio Publico
-            this.app.use( express.static('public'))
-           
-    }
+  middlewares() {
+    //CORS
+    this.app.use(cors())
 
-    routes() {
-        
-        this.app.use(this.paths.auth, auth)
-        this.app.use(this.paths.user, users)
-        this.app.use(this.paths.categorias, categorias)
-    }
+    // lectura y paeso del body
+    this.app.use(express.json())
 
-    listen() {
-        this.app.listen(this.port, () => console.log(`Example app listening on port ${this.port}!`))
-    }
+    //Directorio Publico
+    this.app.use(express.static('public'))
+  }
+
+  routes() {
+    this.app.use(this.paths.auth, auth)
+    this.app.use(this.paths.user, users)
+    this.app.use(this.paths.productos, productos)
+    this.app.use(this.paths.categorias, categorias)
+  }
+
+  listen() {
+    this.app.listen(this.port, () =>
+      console.log(`Example app listening on port ${this.port}!`)
+    )
+  }
 }
 
 module.exports = Server
