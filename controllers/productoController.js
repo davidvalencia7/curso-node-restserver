@@ -1,4 +1,5 @@
-const { Producto } = require('../models/Producto')
+
+const { Producto } = require('../models/')
 
 const index = async (req, res) => {
   const { limit = 5, desde = 0 } = req.query
@@ -18,7 +19,7 @@ const index = async (req, res) => {
 
   const totalProm = Producto.countDocuments(query)
 
-  const [total, productos] = await Promise.all([totalProm, categoriasProm])
+  const [total, productos] = await Promise.all([totalProm, productProm])
 
   return res.status(200).json({
     msg: 'Ok',
@@ -28,19 +29,15 @@ const index = async (req, res) => {
 }
 
 const create = async (req, res) => {
-  const nombre = req.body.nombre.toUpperCase()
+  const { estatus, user, disponible, ...body } = req.body
 
-  if (req.producto)
-    return res
-      .status(400)
-      .json({ msg: `El producto ${producto.nombre}, ya existe` })
 
   const data = {
-    nombre,
-    precio,
-    categoria: req.categoria._id,
-    user: req.user._id,
+    ...body,
+    nombre : body.nombre.toUpperCase(),
+    user: req.user._id
   }
+  console.log(data)
 
   const producto = new Producto(data)
   await producto.save()
@@ -58,11 +55,16 @@ const show = async (req, res) => {
 }
 
 const update = async (req, res) => {
-  const { nombre, precio } = req.body
-  req.producto.nombre = nombre
-  req.producto.precio = precio
+  const { estatus, user, ...data} = req.body
+  console.log(data)
+  req.producto.nombre = data.nombre.toUpperCase()
+  if(data.hasOwnProperty('precio'))
+    req.producto.precio = data.precio
+  if(data.hasOwnProperty('descripcion'))
+    req.producto.descripcion = data.descripcion
   req.producto.user = req.user._id
-  req.producto.categoria = req.categoria._id
+  if(data.hasOwnProperty('categoria'))
+    req.producto.categoria =  data.categoria
 
   const producto = await req.producto.save()
 

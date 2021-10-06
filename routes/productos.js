@@ -1,7 +1,7 @@
 const { Router } = require('express')
 const { check } = require('express-validator')
 
-const { existCategoriaById } = require('../helpers/db-validators')
+const { existCategoriaById, existProductoByNombre } = require('../helpers/db-validators')
 
 const {
   validarCampos,
@@ -22,9 +22,9 @@ router.post(
   [
     validarJWT,
     check('nombre', 'Nombre es Requerido').notEmpty(),
-    check('id').custom(existCategoriaById),
+    check('nombre').custom(existProductoByNombre),
+    check('categoria').custom(existCategoriaById),
     validarCampos,
-    getProducto,
   ],
   create
 )
@@ -36,13 +36,14 @@ router.get(
 )
 
 router.put(
-  '/',
+  '/:id',
   [
-    check('id', 'Id No Valido').isMongoId(),
+    validarJWT,
+    check('categoria', 'Id No Valido').isMongoId(),
     check('nombre', 'Nombre es Requerido').notEmpty(),
+    check('categoria').custom(existCategoriaById),
     validarCampos,
     getProducto,
-    getCategoria,
   ],
   update
 )
