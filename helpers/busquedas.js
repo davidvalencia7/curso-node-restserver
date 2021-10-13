@@ -1,5 +1,5 @@
 const { isValidObjectId } = require("mongoose")
-const { User } = require('../models/')
+const { User, Producto, Categoria } = require('../models/')
 
 const isValidCollection = (coleccion) => {
     const coleccionesPermitidas = [
@@ -27,7 +27,26 @@ const searchUser =  (termino = '') => {
         $and : [{ estatus : true }]
     })
         
-    
 }
 
-module.exports = { isValidCollection, searchUser }
+const searchProducts = (termino = '') => {
+    const regex = new RegExp(termino, 'i')
+
+    return Producto.find({
+        nombre : regex,
+        estatus : true
+    }).populate('categoria','nombre')
+}
+
+const searchCategorias = ( termino = '') => {
+
+    const regex = new RegExp(termino, 'i')
+
+    return Categoria.find({
+        nombre : regex,
+        estatus : true
+    })
+
+}
+
+module.exports = { isValidCollection, searchUser, searchProducts, searchCategorias }

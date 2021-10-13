@@ -1,4 +1,4 @@
-const { isValidCollection, searchUser } = require("../helpers/busquedas")
+const { isValidCollection, searchUser, searchCategorias, searchProducts } = require("../helpers/busquedas")
 
 
 
@@ -16,26 +16,25 @@ const buscar = async (req,res) => {
 
     switch(coleccion){
         case 'users':
-            const user =  await searchUser(termino, res)
+            const user =  await searchUser(termino)
             return res.json({
                 results : (user) ? [user] : []
             })
         case 'categorias':
-
+            const categorias =  await searchCategorias(termino)
+            return res.json({
+                results : (categorias) ? [categorias] : []
+            })
             
         case 'productos':
-
+            const productos =  await searchProducts(termino)
+            return res.json({
+                results : (productos) ? [productos] : []
+            })
         
         default : return res.status(500).json({msg : 'Se le olvido hacer esta busqueda'})
     }
 
-    return res.json(
-        {
-            msg:'controller - buscar',
-            coleccion,
-            termino
-        }
-    )
 }
 
 
